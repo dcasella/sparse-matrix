@@ -4,5 +4,5 @@
 # Executables
 *.exe
 
-# Doxygen
-doc/*
+# PDF Output
+*.pdf

@@ -96,16 +96,13 @@ int main(int argc, const char *argv[]) {
 	std::cout << "m2 (5 x 5) copy3:" << std::endl << m2;
 	std::cout << std::endl << std::endl;
 	
-	// SparseMatrix get rows, cols, size
+	// SparseMatrix get rows, cols, size, D
 	std::cout << "m0 rows: " << m0.rows();
 	std::cout << std::endl << std::endl;
 	std::cout << "m1 cols: " << m1.cols();
 	std::cout << std::endl << std::endl;
 	std::cout << "m2 size: " << m2.size();
 	std::cout << std::endl << std::endl;
-	
-	// SparseMatrix set/get D
-	m3.D() = -1.0;
 	std::cout << "m3 D:    " << m3.D();
 	std::cout << std::endl << std::endl;
 	

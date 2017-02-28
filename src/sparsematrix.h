@@ -340,13 +340,6 @@ public:
   const T D() const { return _D; }
   
   /**
-   * Set the default element.
-   * @brief Default element setter
-   * @return Matrix default element
-   */
-  T& D() { return _D; }
-  
-  /**
    * Insert element into matrix (overwrite if necessary).
    * @brief Matrix add element
    * @param elem Matrix element to add
