@@ -30,17 +30,12 @@ Since `size` is always less than `n * m`, the class is clearly more efficient sp
 `T`: type of the values stored in the matrix.  
 &nbsp;
 
-### Member Types
-
-`size_type: unsigned int`  
-&nbsp;
-
 ### Member classes
 
 #### Element
 
 ```cpp
-element(size_type, size_type, const T&);
+element(size_t, size_t, const T&);
 
 std::ostream& operator<<(std::ostream&, const element&);
 ```
@@ -51,7 +46,7 @@ std::ostream& operator<<(std::ostream&, const element&);
 ```cpp
 SparseMatrix(const T&);
 
-SparseMatrix(size_type, size_type, const T&);
+SparseMatrix(size_t, size_t, const T&);
 
 SparseMatrix(const SparseMatrix&);
 
@@ -61,9 +56,9 @@ SparseMatrix(const SparseMatrix<Q>&);
 
 SparseMatrix& operator=(const SparseMatrix&);
 
-size_type rows() const;
+size_t rows() const;
 
-size_type cols() const;
+size_t cols() const;
 
 size_t size() const;
 
@@ -71,9 +66,9 @@ const T D() const;
 
 void add(const element&);
 
-void add(size_type, size_type, const T&);
+void add(size_t, size_t, const T&);
 
-const T operator()(size_type, size_type);
+const T operator()(size_t, size_t);
 
 void clear();
 ```

@@ -19,16 +19,14 @@ class SparseMatrix {
   
 public:
   
-  typedef unsigned int size_type; ///< Type used for dimensions and positions
-  
   /**
    * Contains data about the element's position in the matrix and value.
    * @brief Matrix element struct
    */
   struct element {
     
-    const size_type i; ///< Index of element relative to matrix rows
-    const size_type j; ///< Index of element relative to matrix columns
+    const size_t i; ///< Index of element relative to matrix rows
+    const size_t j; ///< Index of element relative to matrix columns
     T value;           ///< Value of element
     
     /**
@@ -38,7 +36,7 @@ public:
      * @param j     Index of element relative to matrix columns (unsigned)
      * @param value Value of element
      */
-    element(size_type i, size_type j, const T& value)
+    element(size_t i, size_t j, const T& value)
       : i(i), j(j), value(value) { }
     
     /**
@@ -49,7 +47,7 @@ public:
      * @param value Value of element
      */
     element(int i, int j, const T& value)
-      : i(static_cast<size_type>(i)), j(static_cast<size_type>(j)), value(value) {
+      : i(static_cast<size_t>(i)), j(static_cast<size_t>(j)), value(value) {
       
       assert(i >= 0);
       assert(j >= 0);
@@ -96,8 +94,8 @@ private:
       : key(key), next(next) { }
   };
   
-  size_type _rows; ///< Matrix rows
-  size_type _cols; ///< Matrix cols
+  size_t _rows; ///< Matrix rows
+  size_t _cols; ///< Matrix cols
   T _D;            ///< Matrix default element's value
   
   size_t _size;    ///< Matrix size, number of stored elements
@@ -132,8 +130,8 @@ private:
   template <typename Q>
   void copy(const SparseMatrix<Q>& other) {
     
-    size_type rows_bck = _rows;
-    size_type cols_bck = _cols;
+    size_t rows_bck = _rows;
+    size_t cols_bck = _cols;
     T D_bck = _D;
     
     try {
@@ -166,7 +164,7 @@ private:
    * @return Matrix element
    * @throw  out_of_range Indices i or j are equal or greater than rows or cols
    */
-  const T get(size_type i, size_type j) const {
+  const T get(size_t i, size_t j) const {
     
     if (i >= _rows || j >= _cols)
       throw std::out_of_range("i or j out of bounds");
@@ -210,11 +208,11 @@ public:
    * @param cols Matrix columns, unsigned value
    * @param D    Matrix default element's value
    */
-  SparseMatrix(size_type rows, size_type cols, const T& D)
+  SparseMatrix(size_t rows, size_t cols, const T& D)
     : _rows(rows), _cols(cols), _D(D), _size(0), _head(0) {
     
     #ifndef NDEBUG
-    std::cout << "SparseMatrix::SparseMatrix(size_type, size_type, const T&)" << std::endl;
+    std::cout << "SparseMatrix::SparseMatrix(size_t, size_t, const T&)" << std::endl;
     #endif
     
     assert(rows > 0);
@@ -229,7 +227,7 @@ public:
    * @param D    Matrix default element's value
    */
   SparseMatrix(int rows, int cols, const T& D)
-    : _rows(static_cast<size_type>(rows)), _cols(static_cast<size_type>(cols)),
+    : _rows(static_cast<size_t>(rows)), _cols(static_cast<size_t>(cols)),
       _D(D), _size(0), _head(0) {
     
     #ifndef NDEBUG
@@ -316,14 +314,14 @@ public:
    * @brief Rows getter
    * @return Matrix rows
    */
-  size_type rows() const { return _rows; }
+  size_t rows() const { return _rows; }
   
   /**
    * Get matrix number of columns.
    * @brief Columns getter
    * @return Matrix columns
    */
-  size_type cols() const { return _cols; }
+  size_t cols() const { return _cols; }
   
   /**
    * Get the number of elements.
@@ -348,8 +346,8 @@ public:
     
     node *current = new node(elem);
     
-    size_type rows = elem.i + 1;
-    size_type cols = elem.j + 1;
+    size_t rows = elem.i + 1;
+    size_t cols = elem.j + 1;
     
     if (rows > _rows)
       _rows = rows;
@@ -428,7 +426,7 @@ public:
    * @param  j Index of element relative to matrix columns, unsigned value
    * @return Matrix element
    */
-  const T operator()(size_type i, size_type j) const {
+  const T operator()(size_t i, size_t j) const {
     
     return get(i, j);
   }
@@ -445,7 +443,7 @@ public:
     assert(i >= 0);
     assert(j >= 0);
     
-    return get(static_cast<size_type>(i), static_cast<size_type>(j));
+    return get(static_cast<size_t>(i), static_cast<size_t>(j));
   }
   
   /**
@@ -687,13 +685,13 @@ public:
     
     os << "[";
     
-    for (size_type i = 0; i < m._rows; ++i) {
+    for (size_t i = 0; i < m._rows; ++i) {
       if (i > 0)
         os << ",\n ";
       
       os << "[";
       
-      for (size_type j = 0; j < m._cols; ++j) {
+      for (size_t j = 0; j < m._cols; ++j) {
         if (j > 0)
           os << ",\t";
         
@@ -722,8 +720,8 @@ int evaluate(const SparseMatrix<T>& m, P p) {
   
   int count = 0;
   
-  for (typename SparseMatrix<T>::size_type i = 0; i < m.rows(); ++i) {
-    for (typename SparseMatrix<T>::size_type j = 0; j < m.cols(); ++j) {
+  for (size_t i = 0; i < m.rows(); ++i) {
+    for (size_t j = 0; j < m.cols(); ++j) {
       typename SparseMatrix<T>::element e1(i, j, m(i, j));
       
       if (p(e1)) ++count;
