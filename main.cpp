@@ -14,7 +14,6 @@ struct pair {
 };
 
 std::ostream& operator<<(std::ostream &os, const pair& t) {
-	
     return os << "(" << t.a << ", " << t.b << ")";
 }
 
@@ -41,7 +40,6 @@ struct length_g3 {
 
 
 int main(int argc, const char *argv[]) {
-	
 	// element constructor
 	SparseMatrix<float>::element e1(0, 0, 42);
 	

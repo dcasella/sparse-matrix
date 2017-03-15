@@ -1,5 +1,5 @@
-#ifndef SPARSE_MATRIX_H
-#define SPARSE_MATRIX_H
+#ifndef SPARSE_MATRIX_H_
+#define SPARSE_MATRIX_H_
 
 #include <iostream>  // std::ostream
 #include <cassert>   // assert
@@ -16,15 +16,12 @@
  */
 template <typename T>
 class SparseMatrix {
-  
-public:
-  
+ public:
   /**
    * Contains data about the element's position in the matrix and value.
    * @brief Matrix element struct
    */
   struct element {
-    
     const size_t i; ///< Index of element relative to matrix rows
     const size_t j; ///< Index of element relative to matrix columns
     T value;           ///< Value of element
@@ -36,8 +33,7 @@ public:
      * @param j     Index of element relative to matrix columns (unsigned)
      * @param value Value of element
      */
-    element(size_t i, size_t j, const T& value)
-      : i(i), j(j), value(value) { }
+    element(size_t i, size_t j, const T& value) : i(i), j(j), value(value) { }
     
     /**
      * Create an element with i, j and value parameters (signed).
@@ -47,8 +43,7 @@ public:
      * @param value Value of element
      */
     element(int i, int j, const T& value)
-      : i(static_cast<size_t>(i)), j(static_cast<size_t>(j)), value(value) {
-      
+        : i(static_cast<size_t>(i)), j(static_cast<size_t>(j)), value(value) {
       assert(i >= 0);
       assert(j >= 0);
     }
@@ -61,19 +56,16 @@ public:
     * @return Updated output stream
     */
     friend std::ostream& operator<<(std::ostream& os, const element& e) {
-      
       return os << e.value;
     }
   };
   
-private:
-  
+ private:
   /**
    * Linked-list node implementation: key (element), next.
    * @brief List node struct
    */
   struct node {
-    
     element key; ///< Matrix element
     node *next;  ///< Next node in the list
     
@@ -81,8 +73,7 @@ private:
      * Create an empty node.
      * @brief List node default constructor
      */
-    node()
-      : next(0) { }
+    node() : next(0) { }
     
     /**
      * Create a node with an element as key, and a pointer to the next node.
@@ -90,20 +81,19 @@ private:
      * @param key  List node key
      * @param next Pointer to next node (default: 0) in list
      */
-    node(const element& key, node *next = 0)
-      : key(key), next(next) { }
+    node(const element& key, node *next = 0) : key(key), next(next) { }
   };
   
-  size_t _rows; ///< Matrix rows
-  size_t _cols; ///< Matrix cols
-  T _D;            ///< Matrix default element's value
+  size_t rows_; ///< Matrix rows
+  size_t cols_; ///< Matrix cols
+  T default_;   ///< Matrix default element's value
   
-  size_t _size;    ///< Matrix size, number of stored elements
+  size_t size_; ///< Matrix size, number of stored elements
   
-  node *_head;     ///< Pointer to head (node) of list
+  node *head_;  ///< Pointer to head (node) of list
   
   /**
-   * Prevents the class from being instantiated empty (no _D).
+   * Prevents the class from being instantiated empty (no default_).
    * @brief Default constructor
    */
   SparseMatrix() { }
@@ -114,7 +104,6 @@ private:
    * @param n List node to delete
    */
   void clear_helper(node *n) {
-    
     node *tmp;
     while ((tmp = n)) {
       n = n->next;
@@ -129,15 +118,14 @@ private:
    */
   template <typename Q>
   void copy(const SparseMatrix<Q>& other) {
-    
-    size_t rows_bck = _rows;
-    size_t cols_bck = _cols;
-    T D_bck = _D;
+    size_t rows_bck = rows_;
+    size_t cols_bck = cols_;
+    T default_bck = default_;
     
     try {
-      _rows = other.rows();
-      _cols = other.cols();
-      _D = static_cast<T>(other.D());
+      rows_ = other.rows();
+      cols_ = other.cols();
+      default_ = static_cast<T>(other.D());
       
       typename SparseMatrix<Q>::const_iterator it, it_e;
       
@@ -147,9 +135,9 @@ private:
       }
     }
     catch (...) {
-      _rows = rows_bck;
-      _cols = cols_bck;
-      _D = D_bck;
+      rows_ = rows_bck;
+      cols_ = cols_bck;
+      default_ = default_bck;
       
       clear();
       throw;
@@ -165,14 +153,13 @@ private:
    * @throw  out_of_range Indices i or j are equal or greater than rows or cols
    */
   const T get(size_t i, size_t j) const {
-    
-    if (i >= _rows || j >= _cols)
+    if (i >= rows_ || j >= cols_)
       throw std::out_of_range("i or j out of bounds");
     
-    if (!_head)
-      return _D;
+    if (!head_)
+      return default_;
     
-    node *n = _head, *prev = _head;
+    node *n = head_, *prev = head_;
     
     while (n && (n->key.i < i || (n->key.i == i && n->key.j <= j))) {
       prev = n;
@@ -183,19 +170,17 @@ private:
       return prev->key.value;
     }
     
-    return _D;
+    return default_;
   }
   
-public:
-  
+ public:
   /**
    * Create a sparse matrix with D parameter.
    * @brief Secondary constructor
    * @param D    Matrix default element's value
    */
   explicit SparseMatrix(const T& D)
-    : _rows(0), _cols(0), _D(D), _size(0), _head(0) {
-    
+      : rows_(0), cols_(0), default_(D), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(const T&)" << std::endl;
     #endif
@@ -209,8 +194,7 @@ public:
    * @param D    Matrix default element's value
    */
   SparseMatrix(size_t rows, size_t cols, const T& D)
-    : _rows(rows), _cols(cols), _D(D), _size(0), _head(0) {
-    
+      : rows_(rows), cols_(cols), default_(D), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(size_t, size_t, const T&)" << std::endl;
     #endif
@@ -227,9 +211,8 @@ public:
    * @param D    Matrix default element's value
    */
   SparseMatrix(int rows, int cols, const T& D)
-    : _rows(static_cast<size_t>(rows)), _cols(static_cast<size_t>(cols)),
-      _D(D), _size(0), _head(0) {
-    
+      : rows_(static_cast<size_t>(rows)), cols_(static_cast<size_t>(cols)),
+        default_(D), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(int, int, const T&)" << std::endl;
     #endif
@@ -244,8 +227,7 @@ public:
    * @param other Other SparseMatrix to copy
    */
   SparseMatrix(const SparseMatrix& other)
-    : _rows(0), _cols(0), _D(0), _size(0), _head(0) {
-    
+      : rows_(0), cols_(0), default_(0), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(const SparseMatrix&)" << std::endl;
     #endif
@@ -261,8 +243,7 @@ public:
    */
   template <typename Q>
   SparseMatrix(const SparseMatrix<Q>& other)
-    : _rows(0), _cols(0), _D(0), _size(0), _head(0) {
-    
+      : rows_(0), cols_(0), default_(0), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(const SparseMatrix<Q>&)" << std::endl;
     #endif
@@ -277,18 +258,17 @@ public:
    * @return Copied SparseMatrix
    */
   SparseMatrix& operator=(const SparseMatrix& other) {
-    
     #ifndef NDEBUG
     std::cout << "SparseMatrix::operator=(const SparseMatrix&)" << std::endl;
     #endif
     
     if (this != &other) {
       SparseMatrix tmp(other);
-      std::swap(_rows, tmp._rows);
-      std::swap(_cols, tmp._cols);
-      std::swap(_D, tmp._D);
-      std::swap(_size, tmp._size);
-      std::swap(_head, tmp._head);
+      std::swap(rows_, tmp.rows_);
+      std::swap(cols_, tmp.cols_);
+      std::swap(default_, tmp.default_);
+      std::swap(size_, tmp.size_);
+      std::swap(head_, tmp.head_);
     }
     
     return *this;
@@ -299,14 +279,13 @@ public:
    * @brief Destructor
    */
   ~SparseMatrix() {
-    
     #ifndef NDEBUG
     std::cout << "SparseMatrix::~SparseMatrix()" << std::endl;
     #endif
     
     clear();
-    _rows = 0;
-    _cols = 0;
+    rows_ = 0;
+    cols_ = 0;
   }
   
   /**
@@ -314,28 +293,36 @@ public:
    * @brief Rows getter
    * @return Matrix rows
    */
-  size_t rows() const { return _rows; }
+  size_t rows() const {
+    return rows_;
+  }
   
   /**
    * Get matrix number of columns.
    * @brief Columns getter
    * @return Matrix columns
    */
-  size_t cols() const { return _cols; }
+  size_t cols() const {
+    return cols_;
+  }
   
   /**
    * Get the number of elements.
    * @brief Size getter
    * @return Matrix size
    */
-  size_t size() const { return _size; }
+  size_t size() const {
+    return size_;
+  }
   
   /**
    * Get the default element.
    * @brief Default element getter
    * @return Matrix default element's value
    */
-  const T D() const { return _D; }
+  const T D() const {
+    return default_;
+  }
   
   /**
    * Insert element into matrix (overwrite if necessary).
@@ -343,32 +330,30 @@ public:
    * @param elem Matrix element to add
    */
   void add(const element& elem) {
-    
     node *current = new node(elem);
     
     size_t rows = elem.i + 1;
     size_t cols = elem.j + 1;
     
-    if (rows > _rows)
-      _rows = rows;
+    if (rows > rows_)
+      rows_ = rows;
     
-    if (cols > _cols)
-      _cols = cols;
+    if (cols > cols_)
+      cols_ = cols;
     
     // create head = element
-    if (!_head) {
-      _head = current;
-      ++_size;
+    if (!head_) {
+      head_ = current;
+      ++size_;
       
       return;
     }
     
-    node *n = _head, *prev = _head;
+    node *n = head_, *prev = head_;
     
     // search element or free position
-    while (n && (n->key.i < elem.i
-      || (n->key.i == elem.i && n->key.j < elem.j))) {
-      
+    while (n && (n->key.i < elem.i ||
+                 (n->key.i == elem.i && n->key.j < elem.j))) {
       prev = n;
       n = n->next;
     }
@@ -377,8 +362,8 @@ public:
     if (n && n->key.i == elem.i && n->key.j == elem.j) {
       current->next = n->next;
       
-      if (n == _head) {
-        _head = current;
+      if (n == head_) {
+        head_ = current;
       }
       else {
         prev->next = current;
@@ -390,12 +375,12 @@ public:
       return;
     }
     
-    ++_size;
+    ++size_;
     
     // add element in front of head
-    if (n == _head) {
-      current->next = _head;
-      _head = current;
+    if (n == head_) {
+      current->next = head_;
+      head_ = current;
       
       return;
     }
@@ -414,7 +399,6 @@ public:
    */
   template <typename pos_type>
   void add(pos_type i, pos_type j, const T& value) {
-    
     element e(i, j, value);
     add(e);
   }
@@ -427,7 +411,6 @@ public:
    * @return Matrix element
    */
   const T operator()(size_t i, size_t j) const {
-    
     return get(i, j);
   }
   
@@ -439,7 +422,6 @@ public:
    * @return Matrix element
    */
   const T operator()(int i, int j) const {
-    
     assert(i >= 0);
     assert(j >= 0);
     
@@ -451,10 +433,9 @@ public:
    * @brief Matrix clear
    */
   void clear() {
-    
-    clear_helper(_head);
-    _size = 0;
-    _head = 0;
+    clear_helper(head_);
+    size_ = 0;
+    head_ = 0;
   }
   
   // Iterators
@@ -467,22 +448,18 @@ public:
    */
   class iterator {
     
-  public:
-    
+   public:
     typedef std::forward_iterator_tag iterator_category;
     typedef element                   value_type;
     typedef ptrdiff_t                 difference_type;
     typedef element*                  pointer;
     typedef element&                  reference;
     
-    iterator()
-      : n(0) { }
+    iterator() : n(0) { }
     
-    iterator(const iterator &other)
-      : n(other.n) { }
+    iterator(const iterator &other) : n(other.n) { }
     
     iterator& operator=(const iterator &other) {
-      
       n = other.n;
       
       return *this;
@@ -491,17 +468,14 @@ public:
     ~iterator() { }
     
     reference operator*() const {
-      
       return n->key;
     }
     
     pointer operator->() const {
-      
       return &(n->key);
     }
     
     iterator operator++(int) {
-      
       iterator tmp(*this);
       n = n->next;
       
@@ -509,31 +483,26 @@ public:
     }
     
     iterator& operator++() {
-      
       n = n->next;
       
       return *this;
     }
     
     bool operator==(const iterator &other) const {
-      
       return n == other.n;
     }
     
     bool operator!=(const iterator &other) const {
-      
       return n != other.n;
     }
     
     friend class const_iterator;
     
     bool operator==(const const_iterator &other) const {
-      
       return n == other.n;
     }
     
     bool operator!=(const const_iterator &other) const {
-      
       return n != other.n;
     }
     
@@ -543,8 +512,7 @@ public:
     
     friend class SparseMatrix;
     
-    iterator(node *p)
-      : n(p) { }
+    iterator(node *p) : n(p) { }
     
   };
   
@@ -554,8 +522,7 @@ public:
    * @return Iterator pointing to matrix's first element
    */
   iterator begin() {
-    
-    return iterator(_head);
+    return iterator(head_);
   }
   
   /**
@@ -564,7 +531,6 @@ public:
    * @return Iterator pointing to null
    */
   iterator end() {
-    
     return iterator(0);
   }
   
@@ -574,22 +540,18 @@ public:
    */
   class const_iterator {
     
-  public:
-    
+   public:
     typedef std::forward_iterator_tag iterator_category;
     typedef element                   value_type;
     typedef ptrdiff_t                 difference_type;
     typedef const element*            pointer;
     typedef const element&            reference;
     
-    const_iterator()
-      : n(0) { }
+    const_iterator() : n(0) { }
     
-    const_iterator(const const_iterator &other)
-      : n(other.n) { }
+    const_iterator(const const_iterator &other) : n(other.n) { }
     
     const_iterator& operator=(const const_iterator &other) {
-      
       n = other.n;
       
       return *this;
@@ -598,17 +560,14 @@ public:
     ~const_iterator() { }
     
     reference operator*() const {
-      
       return n->key;
     }
     
     pointer operator->() const {
-      
       return &(n->key);
     }
     
     const_iterator operator++(int) {
-      
       const_iterator tmp(*this);
       n = n->next;
       
@@ -616,31 +575,26 @@ public:
     }
     
     const_iterator& operator++() {
-      
       n = n->next;
       
       return *this;
     }
     
     bool operator==(const const_iterator &other) const {
-      
       return n == other.n;
     }
     
     bool operator!=(const const_iterator &other) const {
-      
       return n != other.n;
     }
     
     friend class iterator;
     
     bool operator==(const iterator &other) const {
-      
       return n == other.n;
     }
     
     bool operator!=(const iterator &other) const {
-      
       return n != other.n;
     }
     
@@ -650,8 +604,7 @@ public:
     
     friend class SparseMatrix;
     
-    const_iterator(node *p)
-      : n(p) { }
+    const_iterator(node *p) : n(p) { }
   };
   
   /**
@@ -660,8 +613,7 @@ public:
    * @return Const iterator pointing to matrix's first element
    */
   const_iterator begin() const {
-    
-    return const_iterator(_head);
+    return const_iterator(head_);
   }
   
   /**
@@ -670,7 +622,6 @@ public:
    * @return Const iterator pointing to null
    */
   const_iterator end() const {
-    
     return const_iterator(0);
   }
   
@@ -682,16 +633,15 @@ public:
    * @return Updated output stream
    */
   friend std::ostream& operator<<(std::ostream& os, const SparseMatrix<T>& m) {
-    
     os << "[";
     
-    for (size_t i = 0; i < m._rows; ++i) {
+    for (size_t i = 0; i < m.rows_; ++i) {
       if (i > 0)
         os << ",\n ";
       
       os << "[";
       
-      for (size_t j = 0; j < m._cols; ++j) {
+      for (size_t j = 0; j < m.cols_; ++j) {
         if (j > 0)
           os << ",\t";
         
@@ -717,7 +667,6 @@ public:
  */
 template <typename T, typename P>
 int evaluate(const SparseMatrix<T>& m, P p) {
-  
   int count = 0;
   
   for (size_t i = 0; i < m.rows(); ++i) {
