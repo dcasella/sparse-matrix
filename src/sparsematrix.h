@@ -86,14 +86,14 @@ class SparseMatrix {
   
   size_t rows_; ///< Matrix rows
   size_t cols_; ///< Matrix cols
-  T default_;   ///< Matrix default element's value
+  T D_;   ///< Matrix default element's value
   
   size_t size_; ///< Matrix size, number of stored elements
   
   node *head_;  ///< Pointer to head (node) of list
   
   /**
-   * Prevents the class from being instantiated empty (no default_).
+   * Prevents the class from being instantiated empty (no D_).
    * @brief Default constructor
    */
   SparseMatrix() { }
@@ -120,12 +120,12 @@ class SparseMatrix {
   void copy(const SparseMatrix<Q>& other) {
     size_t rows_bck = rows_;
     size_t cols_bck = cols_;
-    T default_bck = default_;
+    T D_bck = D_;
     
     try {
       rows_ = other.rows();
       cols_ = other.cols();
-      default_ = static_cast<T>(other.D());
+      D_ = static_cast<T>(other.D());
       
       typename SparseMatrix<Q>::const_iterator it, it_e;
       
@@ -137,7 +137,7 @@ class SparseMatrix {
     catch (...) {
       rows_ = rows_bck;
       cols_ = cols_bck;
-      default_ = default_bck;
+      D_ = D_bck;
       
       clear();
       throw;
@@ -157,7 +157,7 @@ class SparseMatrix {
       throw std::out_of_range("i or j out of bounds");
     
     if (!head_)
-      return default_;
+      return D_;
     
     node *n = head_, *prev = head_;
     
@@ -170,7 +170,7 @@ class SparseMatrix {
       return prev->key.value;
     }
     
-    return default_;
+    return D_;
   }
   
  public:
@@ -180,7 +180,7 @@ class SparseMatrix {
    * @param D    Matrix default element's value
    */
   explicit SparseMatrix(const T& D)
-      : rows_(0), cols_(0), default_(D), size_(0), head_(0) {
+      : rows_(0), cols_(0), D_(D), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(const T&)" << std::endl;
     #endif
@@ -194,7 +194,7 @@ class SparseMatrix {
    * @param D    Matrix default element's value
    */
   SparseMatrix(size_t rows, size_t cols, const T& D)
-      : rows_(rows), cols_(cols), default_(D), size_(0), head_(0) {
+      : rows_(rows), cols_(cols), D_(D), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(size_t, size_t, const T&)" << std::endl;
     #endif
@@ -212,7 +212,7 @@ class SparseMatrix {
    */
   SparseMatrix(int rows, int cols, const T& D)
       : rows_(static_cast<size_t>(rows)), cols_(static_cast<size_t>(cols)),
-        default_(D), size_(0), head_(0) {
+        D_(D), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(int, int, const T&)" << std::endl;
     #endif
@@ -227,7 +227,7 @@ class SparseMatrix {
    * @param other Other SparseMatrix to copy
    */
   SparseMatrix(const SparseMatrix& other)
-      : rows_(0), cols_(0), default_(0), size_(0), head_(0) {
+      : rows_(0), cols_(0), D_(0), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(const SparseMatrix&)" << std::endl;
     #endif
@@ -243,7 +243,7 @@ class SparseMatrix {
    */
   template <typename Q>
   SparseMatrix(const SparseMatrix<Q>& other)
-      : rows_(0), cols_(0), default_(0), size_(0), head_(0) {
+      : rows_(0), cols_(0), D_(0), size_(0), head_(0) {
     #ifndef NDEBUG
     std::cout << "SparseMatrix::SparseMatrix(const SparseMatrix<Q>&)" << std::endl;
     #endif
@@ -266,7 +266,7 @@ class SparseMatrix {
       SparseMatrix tmp(other);
       std::swap(rows_, tmp.rows_);
       std::swap(cols_, tmp.cols_);
-      std::swap(default_, tmp.default_);
+      std::swap(D_, tmp.D_);
       std::swap(size_, tmp.size_);
       std::swap(head_, tmp.head_);
     }
@@ -321,7 +321,7 @@ class SparseMatrix {
    * @return Matrix default element's value
    */
   const T D() const {
-    return default_;
+    return D_;
   }
   
   /**
