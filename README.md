@@ -3,32 +3,29 @@
 > Project's specifications are taken from the 2017 February C++ exam of the course "Programmazione e Amministrazione di Sistema"
 
 A 2D sparse matrix is a matrix in which only the elements explicitly inserted  are physically stored.  
-In this implementation we use a ordered linked-list, where the order of the elements depends on their coordinates in the matrix.  
+In this implementation we use a ordered linked-list, where the order of the elements depends on their coordinates in the matrix.
 
 Time complexity:  
 Empty matrix creation `ϴ(1)`.  
 Element insertion `O(size)`, where size is the number of stored elements.  
 Matrix inspection `O(size)`.  
-Matrix clear `ϴ(size)`.  
+Matrix clear `ϴ(size)`.
 
 Space complexity:  
-Matrix `ϴ(size)`.  
+Matrix `ϴ(size)`.
 
-Since `size` is always less than `n * m`, the class is clearly more efficient space-wise than time-wise.  
-&nbsp;
+Since `size` is always less than `n * m`, the class is clearly more efficient space-wise than time-wise.
 
 ## List of contents
  
-- [Interface](#interface)  
-- [Examples](#examples)  
-&nbsp;
+- [Interface](#interface)
+- [Examples](#examples)
 
 ## Interface
 
 ### Template
 
-`T`: type of the values stored in the matrix.  
-&nbsp;
+`T`: type of the values stored in the matrix.
 
 ### Member classes
 
@@ -39,7 +36,6 @@ element(size_t, size_t, const T&);
 
 std::ostream& operator<<(std::ostream&, const element&);
 ```
-&nbsp;
 
 ### Member functions
 
@@ -72,7 +68,6 @@ const T operator()(size_t, size_t);
 
 void clear();
 ```
-&nbsp;
 
 ### Iterators
 
@@ -85,7 +80,6 @@ const_iterator begin() const;
 
 const_iterator end() const;
 ```
-&nbsp;
 
 ### Non member functions
 
@@ -94,7 +88,6 @@ std::ostream& operator<<(std::ostream&, const SparseMatrix<T>);
 
 int evaluate(const SparseMatrix<T>, P);
 ```
-&nbsp;
 
 ## Examples
 
