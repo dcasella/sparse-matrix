@@ -418,6 +418,43 @@ class SparseMatrix {
   }
 
   /**
+   * Perform matrix multiplication between *this and other of generic type Q,
+   * and return the result
+   * @brief Matrix multiplication operator
+   * @param  other Other matrix
+   * @return Matrix representing the matrix multiplication
+   */
+  template <typename Q>
+  SparseMatrix operator*(const SparseMatrix<Q>& other) const {
+#ifndef NDEBUG
+    std::cout
+        << "SparseMatrix SparseMatrix::operator*(const SparseMatrix<Q>&) const"
+        << std::endl;
+#endif
+
+    if (this->cols() != other.rows())
+      throw std::out_of_range("m1.cols() != m2.rows()");
+
+    SparseMatrix result(this->rows(), other.cols(), this->D());
+
+    const_iterator m1_it;
+    typename SparseMatrix<Q>::const_iterator m2_it;
+
+    for (m1_it = this->begin(); m1_it != this->end(); ++m1_it) {
+      for (m2_it = other.begin(); m2_it != other.end(); ++m2_it) {
+        // only process m1[i, N] * m2[N, j]
+        if (m1_it->j != m2_it->i) continue;
+
+        // sum (m1[i, N] * m2[N, j]) to result[i, j]
+        result.add(m1_it->i, m2_it->j,
+                   result(m1_it->i, m2_it->j) + m1_it->value * m2_it->value);
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * Clear the Matrix.
    * @brief Matrix clear
    */

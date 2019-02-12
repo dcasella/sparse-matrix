@@ -117,18 +117,37 @@ int main(int argc, const char* argv[]) {
   std::cout << "m2(4, 2): " << m2(4, 2);
   std::cout << std::endl << std::endl;
 
+  // SparseMatrix operator*
+  SparseMatrix<int> m4(0);
+  m4.add(0, 1, 4);
+  m4.add(0, 2, -2);
+  m4.add(1, 0, -4);
+  m4.add(1, 1, -3);
+  SparseMatrix<int> m5(3, 1, 0);
+  m5.add(0, 1, 1);
+  m5.add(1, 0, 1);
+  m5.add(1, 1, -1);
+  m5.add(2, 0, 2);
+  m5.add(2, 1, 3);
+  std::cout << "m4 (2 x 3):" << std::endl << m4;
+  std::cout << std::endl << std::endl;
+  std::cout << "m5 (3 x 2):" << std::endl << m5;
+  std::cout << std::endl << std::endl;
+  std::cout << "m4 * m5:" << std::endl << m4 * m5;
+  std::cout << std::endl << std::endl;
+
   // SparseMatrix clear
   m2.clear();
   std::cout << "m2 (5 x 5) clear:" << std::endl << m2;
   std::cout << std::endl << std::endl;
 
-  // prepare matrix m4 for evaluate(m4, length_g3<std::string>())
-  SparseMatrix<std::string> m4("nil");
-  m4.add(1, 1, "yes");
-  m4.add(1, 2, "foobar");
-  m4.add(2, 1, "hello");
-  m4.add(2, 2, "rip");
-  std::cout << "m4 (3 x 3):" << std::endl << m4;
+  // prepare matrix m6 for evaluate(m6, length_g3<std::string>())
+  SparseMatrix<std::string> m6("nil");
+  m6.add(1, 1, "yes");
+  m6.add(1, 2, "foobar");
+  m6.add(2, 1, "hello");
+  m6.add(2, 2, "rip");
+  std::cout << "m6 (3 x 3):" << std::endl << m6;
   std::cout << std::endl << std::endl;
 
   // SparseMatrix function evaluate
@@ -136,7 +155,7 @@ int main(int argc, const char* argv[]) {
   std::cout << std::endl << std::endl;
   std::cout << "m3 positive values:        " << evaluate(m3, positive<float>());
   std::cout << std::endl << std::endl;
-  std::cout << "m4 values with length > 3: " << evaluate(m4, length_g3());
+  std::cout << "m6 values with length > 3: " << evaluate(m6, length_g3());
   std::cout << std::endl << std::endl;
 
   // Test custom type
@@ -145,17 +164,17 @@ int main(int argc, const char* argv[]) {
   pair p1("1", "1");
   pair p2("2", "2");
   pair p3("3", "3");
-  SparseMatrix<pair> m5(pD);
-  m5.add(0, 0, p0);
-  m5.add(1, 1, p1);
-  m5.add(2, 2, p2);
-  m5.add(3, 3, p3);
-  std::cout << "m5 (4 x 4):" << std::endl << m5;
+  SparseMatrix<pair> m7(pD);
+  m7.add(0, 0, p0);
+  m7.add(1, 1, p1);
+  m7.add(2, 2, p2);
+  m7.add(3, 3, p3);
+  std::cout << "m7 (4 x 4):" << std::endl << m7;
   std::cout << std::endl << std::endl;
 
   // Test out_of_range exception from get function
   try {
-    std::cout << "m5(4, 2): " << m5(4, 2);
+    std::cout << "m7(4, 2): " << m5(4, 2);
     std::cout << std::endl << std::endl;
   } catch (const std::out_of_range& e) {
     std::cerr << "Out of range exception: " << e.what();
