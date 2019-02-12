@@ -126,10 +126,10 @@ class SparseMatrix {
       cols_ = other.cols();
       D_ = static_cast<T>(other.D());
 
-      typename SparseMatrix<Q>::const_iterator it, it_e;
+      typename SparseMatrix<Q>::const_iterator it;
 
       for (it = other.begin(); it != other.end(); ++it) {
-        SparseMatrix<T>::element e(it->i, it->j, static_cast<T>(it->value));
+        element e(it->i, it->j, static_cast<T>(it->value));
         add(e);
       }
     } catch (...) {
